@@ -22,6 +22,7 @@ def get_yesterday_date(fetch_date):
 def get_file_path(fetch_date):
     yesterday = get_yesterday_date(fetch_date)
     filename = "tomtom_{}.csv".format(yesterday)
+    
     return os.path.join(config.CSV_FILE_DIR, filename)
 
 def import_data():
@@ -53,6 +54,7 @@ def get_new_data(df, fetch_date):
 
 def save_new_data_to_csv(data_to_append, fetch_date):
     filename = get_file_path(fetch_date)
+    
     if not data_to_append.empty:
         data_to_append.to_csv(filename, encoding='utf-8', index=False)
 

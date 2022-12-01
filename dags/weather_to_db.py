@@ -2,8 +2,7 @@ import argparse
 import os
 import csv
 from datetime import timedelta, datetime
-
-from model import Connection, Tomtom
+from model_weather import Connection, Weather
 import config
 
 def get_yesterday_date(fetch_date):
@@ -11,7 +10,7 @@ def get_yesterday_date(fetch_date):
 
 def get_file_path(fetch_date):
     yesterday = get_yesterday_date(fetch_date)
-    filename = "tomtom_{}.csv".format(yesterday)
+    filename = "Weather_{}.csv".format(yesterday)
     return os.path.join(config.CSV_FILE_DIR, filename)
 
 def main(fetch_date, db_connection):
@@ -22,19 +21,17 @@ def main(fetch_date, db_connection):
     with open(filename, encoding='utf-8') as csvf:
         csv_reader = csv.DictReader(csvf)
         for row in csv_reader:
-            tomtom_data = Tomtom(timestamp=row['timestamp'],
+            weather_data = Weather(
                                 date_time=row['date_time'],
-                                traffic_index=row['traffic_index'],
-                                jams_count=row['jams_count'],
-                                jams_length=row['jams_length'],
-                                jams_delay=row['jams_delay'],
-                                traffic_index_weekago=row['traffic_index_weekago'],
-                                weekday=row['weekday'])
-            data_insert.append(tomtom_data)
+                                time=row['time'],
+                                weathervalue=row['weathervalue'],
+                                precipmm=row["precipMM"]
+                               )
+            data_insert.append(weather_data)
 
     connection = Connection(db_connection)
     session = connection.get_session()
-    session.execute("DELETE FROM tomtom where date_time >= timestamp '{} 00:00:00' ".format(yesterday))
+    session.execute("DELETE FROM weather where date_time >= timestamp '{} 00:00:00' ".format(yesterday))
     session.bulk_save_objects(data_insert)
     session.commit()
     session.close()

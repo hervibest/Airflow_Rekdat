@@ -26,6 +26,10 @@ def init_db(db_connection):
     engine = create_engine(db_connection)
     Base.metadata.create_all(bind=engine)
 
+
+
+
+
 class Tomtom(Base):
     __tablename__ = 'tomtom'
     
@@ -47,3 +51,5 @@ class Tomtom(Base):
         self.jams_delay = jams_delay
         self.traffic_index_weekago = traffic_index_weekago
         self.weekday = weekday
+
+

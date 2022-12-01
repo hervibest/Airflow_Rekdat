@@ -11,16 +11,16 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
 }
 with DAG(
-    dag_id='tomtom_data_migration',
+    dag_id='weather_data_migration',
     default_args=default_args,
-    description='Tomtom Data Migration',
+    description='Weather Data Migration',
     schedule_interval="@once",
     start_date=datetime.strptime("2021-09-10", '%Y-%m-%d'),
     catchup=False
 ) as dag:
 
     t1 = BashOperator(
-        task_id='tomtom_data_migration',
-        bash_command='python /opt/airflow/dags/tomtom_data_migration.py '
+        task_id='weather_data_migration',
+        bash_command='python /opt/airflow/dags/weather_data_migration.py '
         '--connection %s' % Variable.get("data_dev_connection")
     )

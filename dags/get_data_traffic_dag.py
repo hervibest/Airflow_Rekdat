@@ -12,22 +12,17 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
 }
 with DAG(
-    dag_id='tomtom',
+    dag_id='get_traffic',
     default_args=default_args,
-    description='Schedule Tomtom Ingestion',
+    description='Schedules Get Traffic From Database',
     schedule_interval="@daily",
     start_date=days_ago(6),
     catchup=True
 ) as dag:
 
     t1 = BashOperator(
-        task_id='import_tomtom_data_to_csv',
-        bash_command='python /opt/airflow/dags/tomtom_ingestion.py --date {{ ds }}'
-    )
-    t2 = BashOperator(
-        task_id='export_data_to_db',
-        bash_command='python /opt/airflow/dags/tomtom_to_db.py '
-                     '--date {{ ds }} --connection %s' % Variable.get("data_dev_connection")
-    )
+        task_id='get_data_traffic',
+        bash_command='python /opt/airflow/dags/get_data_traffic.py --date {{ ds }}'
 
-    t2.set_upstream(t1)
+    )
+    t1
